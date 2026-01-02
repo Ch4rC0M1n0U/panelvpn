@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Système - OSINT Admin{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-gear"></i> Système</h2>
+
+<div class="row">
+    <!-- Infos système -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-pc-display"></i> Informations système</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-dark">
+                    <tr>
+                        <td>Uptime</td>
+                        <td><strong>{{ system_info.uptime|default('N/A') }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Mémoire</td>
+                        <td>
+                            {{ system_info.memory|default('N/A') }}
+                            <div class="progress mt-2" style="height: 10px;">
+                                <div class="progress-bar bg-warning" style="width: {{ system_info.memory_percent|default(0) }}%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Disque</td>
+                        <td>
+                            {{ system_info.disk|default('N/A') }}
+                            <div class="progress mt-2" style="height: 10px;">
+                                <div class="progress-bar bg-danger" style="width: {{ system_info.disk_percent|default(0) }}%"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Load Average</td>
+                        <td>{{ system_info.load|default('N/A') }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- WireGuard -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-shield-check"></i> WireGuard</h5>
+                <form action="{{ url_for('restart_wireguard') }}" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-outline-warning">
+                        <i class="bi bi-arrow-clockwise"></i> Redémarrer
+                    </button>
+                </form>
+            </div>
+            <div class="card-body">
+                <table class="table table-dark">
+                    <tr>
+                        <td>Interface</td>
+                        <td><code>wg0</code></td>
+                    </tr>
+                    <tr>
+                        <td>Port</td>
+                        <td><code>443/UDP</code></td>
+                    </tr>
+                    <tr>
+                        <td>Réseau</td>
+                        <td><code>10.10.0.0/24</code></td>
+                    </tr>
+                    <tr>
+                        <td>IP Serveur</td>
+                        <td><code>10.10.0.1</code></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Config WireGuard -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-file-earmark-code"></i> Configuration WireGuard</h5>
+    </div>
+    <div class="card-body">
+        <pre style="max-height: 400px; overflow-y: auto;">{{ wg_config }}</pre>
+    </div>
+</div>
+
+<!-- Actions rapides -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-lightning"></i> Actions rapides</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <form action="{{ url_for('restart_wireguard') }}" method="POST">
+                    <button type="submit" class="btn btn-outline-warning w-100">
+                        <i class="bi bi-arrow-clockwise"></i> Redémarrer WireGuard
+                    </button>
+                </form>
+            </div>
+            <div class="col-md-4 mb-3">
+                <a href="{{ url_for('services') }}" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-box"></i> Gérer les services
+                </a>
+            </div>
+            <div class="col-md-4 mb-3">
+                <a href="{{ url_for('users') }}" class="btn btn-outline-success w-100">
+                    <i class="bi bi-people"></i> Gérer les utilisateurs
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chemins importants -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-folder"></i> Chemins importants</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-dark table-sm">
+            <tr>
+                <td>Installation</td>
+                <td><code>/opt/osint</code></td>
+            </tr>
+            <tr>
+                <td>Données</td>
+                <td><code>/opt/osint/data</code></td>
+            </tr>
+            <tr>
+                <td>Clients VPN</td>
+                <td><code>/opt/osint/clients</code></td>
+            </tr>
+            <tr>
+                <td>Config WireGuard</td>
+                <td><code>/etc/wireguard/wg0.conf</code></td>
+            </tr>
+            <tr>
+                <td>Credentials</td>
+                <td><code>/opt/osint/credentials.txt</code></td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endblock %}

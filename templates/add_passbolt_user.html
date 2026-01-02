@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Nouvel utilisateur Passbolt - OSINT Admin{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{{ url_for('passbolt') }}" class="text-muted text-decoration-none">
+        <i class="bi bi-arrow-left"></i> Retour à Passbolt
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-person-plus"></i> Nouvel utilisateur Passbolt</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control bg-dark text-light border-secondary" 
+                               id="email" name="email" required
+                               placeholder="utilisateur@exemple.com">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstname" class="form-label">Prénom</label>
+                            <input type="text" class="form-control bg-dark text-light border-secondary" 
+                                   id="firstname" name="firstname" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lastname" class="form-label">Nom</label>
+                            <input type="text" class="form-control bg-dark text-light border-secondary" 
+                                   id="lastname" name="lastname" required>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="role" class="form-label">Rôle</label>
+                        <select class="form-select bg-dark text-light border-secondary" 
+                                id="role" name="role">
+                            <option value="user" selected>Utilisateur</option>
+                            <option value="admin">Administrateur</option>
+                        </select>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        Un lien d'activation sera généré. Transmettez-le à l'utilisateur pour qu'il puisse finaliser son compte.
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-plus-circle"></i> Créer l'utilisateur
+                        </button>
+                        <a href="{{ url_for('passbolt') }}" class="btn btn-outline-secondary">
+                            Annuler
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

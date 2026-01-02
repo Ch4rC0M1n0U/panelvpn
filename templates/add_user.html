@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Nouvel utilisateur - OSINT Admin{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{{ url_for('users') }}" class="text-muted text-decoration-none">
+        <i class="bi bi-arrow-left"></i> Retour aux utilisateurs
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-person-plus"></i> Nouvel utilisateur VPN</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-4">
+                        <label for="username" class="form-label">Nom d'utilisateur</label>
+                        <input type="text" class="form-control bg-dark text-light border-secondary" 
+                               id="username" name="username" required
+                               pattern="[a-zA-Z0-9_]+"
+                               placeholder="ex: jean_dupont">
+                        <small class="text-muted">
+                            Lettres, chiffres et underscores uniquement
+                        </small>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        L'utilisateur recevra :
+                        <ul class="mb-0 mt-2">
+                            <li>Une adresse IP privée (10.10.0.x)</li>
+                            <li>Un fichier de configuration WireGuard</li>
+                            <li>Un QR code pour scanner avec l'app mobile</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-plus-circle"></i> Créer l'utilisateur
+                        </button>
+                        <a href="{{ url_for('users') }}" class="btn btn-outline-secondary">
+                            Annuler
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

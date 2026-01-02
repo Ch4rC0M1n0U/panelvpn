@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Passbolt - OSINT Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-key"></i> Gestion Passbolt</h2>
+    <a href="{{ url_for('add_passbolt_user') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Nouvel utilisateur
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Utilisateurs Passbolt</h5>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-dark table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td><i class="bi bi-person me-2"></i>{{ user.name }}</td>
+                    <td><code>{{ user.email }}</code></td>
+                    <td>
+                        {% if user.role == 'admin' %}
+                            <span class="badge bg-danger">Admin</span>
+                        {% else %}
+                            <span class="badge bg-secondary">User</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" class="text-center py-5 text-muted">
+                        <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                        Aucun utilisateur Passbolt trouvé
+                        <br><small>Ou le container Passbolt n'est pas accessible</small>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-terminal"></i> Commandes CLI</h5>
+    </div>
+    <div class="card-body">
+        <h6>Créer un admin :</h6>
+        <pre class="mb-4">docker exec passbolt su -m -c "/usr/share/php/passbolt/bin/cake passbolt register_user -u EMAIL -f PRENOM -l NOM -r admin" -s /bin/sh www-data</pre>
+        
+        <h6>Lister les utilisateurs :</h6>
+        <pre class="mb-0">docker exec passbolt su -m -c "/usr/share/php/passbolt/bin/cake passbolt get_users" -s /bin/sh www-data</pre>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5><i class="bi bi-globe"></i> Accès Passbolt</h5>
+        <p>Interface web : <code>https://10.10.0.1:8444</code></p>
+        <small class="text-muted">
+            Note : Acceptez l'avertissement de certificat (certificat auto-signé)
+        </small>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Connexion - DR5-OA5 OSINT{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header text-center py-4">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="DR5-OA5" style="width: 120px; height: 120px; margin-bottom: 1rem;">
+                <h4 class="mb-1">DR5-OA5 OSINT</h4>
+                <small class="text-muted">Panneau d'administration</small>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Nom d'utilisateur</label>
+                        <input type="text" class="form-control bg-dark text-light border-secondary" 
+                               id="username" name="username" required autofocus>
+                    </div>
+                    <div class="mb-4">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <input type="password" class="form-control bg-dark text-light border-secondary" 
+                               id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-box-arrow-in-right"></i> Connexion
+                    </button>
+                </form>
+            </div>
+            <div class="card-footer text-center text-muted small py-3">
+                Brussels Federal Judicial Police
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

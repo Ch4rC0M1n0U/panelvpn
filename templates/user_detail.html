@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}{{ username }} - OSINT Admin{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{{ url_for('users') }}" class="text-muted text-decoration-none">
+        <i class="bi bi-arrow-left"></i> Retour aux utilisateurs
+    </a>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+        <i class="bi bi-person-circle"></i> {{ username }}
+        {% if user_info %}
+            {% if user_info.status == 'connected' %}
+                <span class="badge status-connected ms-2">Connecté</span>
+            {% else %}
+                <span class="badge status-offline ms-2">Hors ligne</span>
+            {% endif %}
+        {% endif %}
+    </h2>
+    <form action="{{ url_for('delete_user', username=username) }}" 
+          method="POST" class="d-inline"
+          onsubmit="return confirm('Supprimer définitivement {{ username }} ?');">
+        <button type="submit" class="btn btn-outline-danger">
+            <i class="bi bi-trash"></i> Supprimer
+        </button>
+    </form>
+</div>
+
+<div class="row">
+    <!-- QR Code -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-qr-code"></i> QR Code</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="qr-code mb-3">
+                    <img src="data:image/png;base64,{{ qr_base64 }}" alt="QR Code" class="img-fluid">
+                </div>
+                <p class="text-muted small mb-3">
+                    Scannez avec WireGuard ou AmneziaVPN
+                </p>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('download_qr', username=username) }}" class="btn btn-outline-primary">
+                        <i class="bi bi-download"></i> Télécharger QR
+                    </a>
+                    <a href="{{ url_for('download_config', username=username) }}" class="btn btn-outline-success">
+                        <i class="bi bi-file-earmark-code"></i> Télécharger .conf
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Infos & Config -->
+    <div class="col-md-8 mb-4">
+        <!-- Informations -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Informations</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-dark mb-0">
+                    <tr>
+                        <td style="width: 200px;">Nom</td>
+                        <td><strong>{{ username }}</strong></td>
+                    </tr>
+                    {% if user_info %}
+                    <tr>
+                        <td>Adresse IP</td>
+                        <td><code>{{ user_info.ip }}</code></td>
+                    </tr>
+                    <tr>
+                        <td>Dernier handshake</td>
+                        <td>{{ user_info.last_handshake }}</td>
+                    </tr>
+                    <tr>
+                        <td>Clé publique</td>
+                        <td><code class="small">{{ user_info.public_key[:20] }}...</code></td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+        
+        <!-- Configuration -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-file-earmark-code"></i> Configuration</h5>
+                <button class="btn btn-sm btn-outline-secondary" onclick="copyConfig()">
+                    <i class="bi bi-clipboard"></i> Copier
+                </button>
+            </div>
+            <div class="card-body">
+                <pre id="config-content" class="mb-0">{{ config_content }}</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Instructions -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-book"></i> Instructions pour l'utilisateur</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <h6><i class="bi bi-phone"></i> Mobile (Android/iOS)</h6>
+                <ol class="small">
+                    <li>Installer <strong>WireGuard</strong> ou <strong>AmneziaVPN</strong></li>
+                    <li>Ouvrir l'app et appuyer sur <strong>+</strong></li>
+                    <li>Choisir <strong>"Scanner QR code"</strong></li>
+                    <li>Scanner le QR ci-dessus</li>
+                    <li>Activer la connexion</li>
+                </ol>
+            </div>
+            <div class="col-md-4">
+                <h6><i class="bi bi-laptop"></i> Windows/Mac</h6>
+                <ol class="small">
+                    <li>Installer <strong>WireGuard</strong> depuis wireguard.com</li>
+                    <li>Télécharger le fichier <strong>.conf</strong></li>
+                    <li>Ouvrir WireGuard → "Importer tunnel"</li>
+                    <li>Sélectionner le fichier .conf</li>
+                    <li>Activer la connexion</li>
+                </ol>
+            </div>
+            <div class="col-md-4">
+                <h6><i class="bi bi-globe"></i> Après connexion</h6>
+                <ul class="small">
+                    <li>Dashboard : <code>http://10.10.0.1:7575</code></li>
+                    <li>SearXNG : <code>http://10.10.0.1:8080</code></li>
+                    <li>Tor Browser : <code>http://10.10.0.1:5800</code></li>
+                    <li>Passbolt : <code>https://10.10.0.1:8444</code></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function copyConfig() {
+    const config = document.getElementById('config-content').textContent;
+    navigator.clipboard.writeText(config).then(() => {
+        alert('Configuration copiée !');
+    });
+}
+</script>
+{% endblock %}

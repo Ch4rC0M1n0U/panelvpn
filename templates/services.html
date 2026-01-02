@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Services Docker - OSINT Admin{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-box"></i> Services Docker</h2>
+    <div>
+        <span class="badge bg-success me-2">
+            {{ containers|selectattr('running')|list|length }} running
+        </span>
+        <span class="badge bg-danger">
+            {{ containers|rejectattr('running')|list|length }} stopped
+        </span>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-dark table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>Statut</th>
+                    <th>Ports</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for container in containers %}
+                <tr>
+                    <td>
+                        <i class="bi bi-box me-2"></i>
+                        <strong>{{ container.name }}</strong>
+                    </td>
+                    <td>
+                        {% if container.running %}
+                            <span class="badge status-running">
+                                <i class="bi bi-check-circle"></i> {{ container.status }}
+                            </span>
+                        {% else %}
+                            <span class="badge status-stopped">
+                                <i class="bi bi-x-circle"></i> {{ container.status }}
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <small class="text-muted">{{ container.ports[:50] }}{% if container.ports|length > 50 %}...{% endif %}</small>
+                    </td>
+                    <td class="text-end">
+                        <a href="{{ url_for('service_logs', container=container.name) }}" 
+                           class="btn btn-sm btn-outline-info" title="Voir logs">
+                            <i class="bi bi-terminal"></i>
+                        </a>
+                        <form action="{{ url_for('restart_service', container=container.name) }}" 
+                              method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-warning" title="Redémarrer">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="text-center py-5 text-muted">
+                        Aucun container Docker trouvé
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Services principaux -->
+<h4 class="mt-5 mb-3">Accès aux services</h4>
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h6><i class="bi bi-speedometer2 text-primary"></i> Dashboard</h6>
+                <code>http://10.10.0.1:7575</code>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h6><i class="bi bi-search text-success"></i> SearXNG</h6>
+                <code>http://10.10.0.1:8080</code>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h6><i class="bi bi-incognito text-warning"></i> Tor Browser</h6>
+                <code>http://10.10.0.1:5800</code>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h6><i class="bi bi-key text-info"></i> Passbolt</h6>
+                <code>https://10.10.0.1:8444</code>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h6><i class="bi bi-shield text-danger"></i> AdGuard</h6>
+                <code>http://10.10.0.1:8082</code>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h6><i class="bi bi-person-lock text-secondary"></i> Authentik</h6>
+                <code>http://10.10.0.1:9000</code>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
